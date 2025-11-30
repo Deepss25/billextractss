@@ -7,3 +7,4 @@ pytesseract
 pymupdf
 litellm
 gunicorn
+python-multipart
