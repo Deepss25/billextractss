@@ -16,14 +16,26 @@ def ocr_image(image: Image.Image) -> str:
     return text
 
 
+# ------------------------------------------------------------
+# 1️⃣ OCR for documents coming from a URL (existing)
+# ------------------------------------------------------------
 def load_document_and_get_pages_text(url: str) -> List[str]:
     """
-    Downloads document from URL and returns a list of page texts.
-    This version assumes image files (PNG/JPG) only.
+    Downloads document from URL and returns page texts.
+    (Image files only: PNG/JPG)
     """
     raw = download_file(url)
-
     image = Image.open(io.BytesIO(raw))
     text = ocr_image(image)
+    return [text]
 
+
+# ------------------------------------------------------------
+# 2️⃣ OCR for documents uploaded directly (new)
+# ------------------------------------------------------------
+def load_image_and_get_pages_text(image: Image.Image) -> List[str]:
+    """
+    Takes a PIL image directly (uploaded file) and returns page text.
+    """
+    text = ocr_image(image)
     return [text]
