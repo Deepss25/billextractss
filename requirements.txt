@@ -1,0 +1,9 @@
+fastapi
+uvicorn[standard]
+pydantic
+requests
+pillow
+pytesseract
+pymupdf
+litellm
+gunicorn
