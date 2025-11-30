@@ -1,17 +1,22 @@
 from fastapi import FastAPI, HTTPException, UploadFile, File
 from app.models import ExtractRequest, ExtractResponse
-from app.ocr import load_document_and_get_pages_text
+from app.ocr import load_document_and_get_pages_text, load_image_and_get_pages_text
 from app.llm import extract_items_from_page
 from app.utils import classify_page_type
 from io import BytesIO
 from PIL import Image
-
 
 # -------------------------------------------------------
 #  IMPORTANT: app must be created BEFORE any @app.post()
 # -------------------------------------------------------
 app = FastAPI()
 
+# -------------------------------------------------------
+# Root route
+# -------------------------------------------------------
+@app.get("/")
+def read_root():
+    return {"message": "Bill Extractor API is running!"}
 
 # -------------------------------------------------------
 # 1️⃣ Original endpoint: URL-based document input
@@ -58,7 +63,6 @@ async def extract_bill_data(request: ExtractRequest):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-
 # -------------------------------------------------------
 # 2️⃣ New endpoint: Local file upload in Swagger
 # -------------------------------------------------------
@@ -69,8 +73,7 @@ async def extract_bill_data_file(file: UploadFile = File(...)):
         contents = await file.read()
         image = Image.open(BytesIO(contents))
 
-        # 2️⃣ Use NEW local-image OCR function
-        from app.ocr import load_image_and_get_pages_text
+        # 2️⃣ Use local-image OCR function
         pages_text = load_image_and_get_pages_text(image)
 
         # 3️⃣ Process same as URL flow
